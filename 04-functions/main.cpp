@@ -14,32 +14,32 @@ void PrintTableHead() {
 	cout << string(74, '-') << endl;
 }
 
-double ComputeSeries(double xn, int &n, const int kMaxIters, double eps) {
+double ComputeSeries(double x, int &n, const int kMaxIters, double eps) {
 	n = 1;
-	double f, iter;
-	iter = f = 1;
-	while (abs(iter) > eps) {
-		iter = pow((-1), n)*pow(xn, n * 2) / tgamma(n * 2);
-		f += iter;
+	double nth_term = 1;
+	double f = nth_term;
+	while (abs(nth_term) > eps) {
+		nth_term = pow(-1, n) * pow(x, n * 2) / tgamma(n * 2 + 1);
+		f += nth_term;
 		n++;
 		if (n > kMaxIters) break;
 	}
 	return f;
 }
 
-void PrintTableRow(double xn, double f, int n, int kMaxIters) {
-	cout << "|" << setw(13) << xn << setw(7) << "|" << setw(14);
+void PrintTableRow(double x, double f, int n, const int kMaxIters) {
+	cout << "|" << setw(13) << x << setw(7) << "|" << setw(14);
 	if (n <= kMaxIters)
 		cout << f << setw(6) << "|";
 	else
 		cout << " limit is exceeded |";
-	cout << setw(14) << cos(xn) << setw(6) << "|";
+	cout << setw(14) << cos(x) << setw(6) << "|";
 	cout << setw(7) << n << setw(7) << "|\n";
 }
 
 int main() {
 	const int kMaxIters = 1000;
-	const double kEps = 1e-15;
+
 	double xn, xk, dx, eps;
 	cout << "Enter xn -> ";
 	cin >> xn;
@@ -65,7 +65,7 @@ int main() {
 		cout << fixed;
 		cout.precision(6);
 
-		while ((xk - xn) > kEps)
+		while (xn <= xk)
 		{
 			int n = 1;
 			double f = ComputeSeries(xn, n, kMaxIters, eps);

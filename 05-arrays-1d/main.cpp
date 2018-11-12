@@ -1,96 +1,82 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <iomanip>
 #include <string>
 
 using namespace std;
 
-void PrintArray(int array[], int size) {
-	cout << string(61, '-') << endl;
-	cout << "|";
-
-	for (int i = 0; i < size; i++) {
-		cout << setw(2) << "[" << i << "]" << setw(2) << "|";
-	}
-
-	cout << "<- Index";
-	cout << endl << string(61, '-') << endl << "|";
-
-	for (int i = 0; i < size; i++) {
-		cout << setw(3) << array[i] << setw(3) << "|";
-	}
-
-	cout << "<- array[i]";
-	cout << endl;
-	cout << string(61, '-') << endl;
-	cout << endl;
-}
-
-void SortArray(int array[], int size) {
-	for (int i = 0; i < size - 1; i++) {
-		for (int j = 0; j < size - i - 1; j++) {
-			if (abs(array[j]) > abs(array[j + 1])) {
-				swap(array[j], array[j + 1]);
-			}
-		}
-	}
-}
-
-int Zeroes(int a[], int size) {
-	int result = 0;
-	for (int i = 0; i < size; i++)
-	{
-		if (a[i] == 0)
-		{
-			result++;
-		}
-	}
-	return result;
-}
-
-int SumAfterMax(int a[], int size, int max_modulo) {
-	int result = 0;
-	for (int i = max_modulo; i < size; i++)
-	{
-		result += a[i];
-	}
-	return result;
-}
+void PrintArray(double arr[], const int kArraySize);
+int CountZeroes(double arr[], const int kArraySize);
+int FindMin(double arr[], const int kArraySize);
+double SumAfterMin(double arr[], int min_addr, const int kArraySize);
+void SortArray(double arr[], const int kArraySize);
 
 int main() {
 	int const kArraySize = 10;
-	int array[kArraySize],
-		max_modulo = 0;
+	double arr[kArraySize] = { 0, -1, 0, .3, -4, .5, 6, -7, 0, -.9 };
 
-	srand((unsigned)time(NULL));
+	cout << "Starting array:\n";
+	PrintArray(arr, kArraySize);
+	cout << endl;
 
-	//generation array
-	for (int i = 0; i < kArraySize; i++) {
-		array[i] = int(pow(-1, rand() % 2))*(rand() % 10); //[-9..9]
-		if (abs(array[i]) > max_modulo)
-			max_modulo = i;
-	}
-	cout << "Starting Array :" << endl;
-	PrintArray(array, kArraySize);
+	cout << "\nNumber of zero elements: ";
+	cout << CountZeroes(arr, kArraySize);
+	cout << endl;
 
-	cout << "Number of zero elements: ";
-	cout << Zeroes(array, kArraySize);
-	cout << endl << endl;
+	int min_addr = FindMin(arr, kArraySize);
+	cout << "\nSum of elements after min element = ";
+	if (min_addr < kArraySize - 1)
+		cout << SumAfterMin(arr, min_addr, kArraySize);
+	else
+		cout << "min element is the last one";
+	cout << endl;
 
-	cout << "Sum of elements after max modulo element = ";
-	if (max_modulo < kArraySize)
-	{
-		cout << SumAfterMax(array, kArraySize, max_modulo);
-		cout << endl << endl;
-	}
-	else {
-		cout << "Error: max modulo element is last";
-		cout << endl << endl;
-	}
-	cout << "Sorted Array :" << endl;
-	SortArray(array, kArraySize);
-	PrintArray(array, kArraySize);
+	cout << "\nSorted array:\n";
+	SortArray(arr, kArraySize);
+	PrintArray(arr, kArraySize);
 
 	return 0;
+}
+
+void PrintArray(double arr[], const int kArraySize) {
+	cout << string(81, '-') << "\n|";
+
+	for (int i = 0; i < kArraySize; i++)
+		cout << setw(3) << "[" << i << "]" << setw(3) << "|";
+
+	cout << " <- index\n" << string(81, '-') << "\n|";
+
+	for (int i = 0; i < kArraySize; i++)
+		cout << setw(4) << arr[i] << setw(4) << "|";
+
+	cout << " <- array\n" << string(81, '-');
+}
+
+int CountZeroes(double arr[], const int kArraySize) {
+	int num_zeroes = 0;
+	for (int i = 0; i < kArraySize; i++)
+		if (arr[i] == 0)
+			num_zeroes++;
+	return num_zeroes;
+}
+
+int FindMin(double arr[], const int kArraySize) {
+	int min_addr = 0;
+	for (int i = 1; i < kArraySize; i++)
+		if (arr[i] < arr[min_addr])
+			min_addr = i;
+	return min_addr;
+}
+
+double SumAfterMin(double arr[], int min_addr, const int kArraySize) {
+	double sum_after_min = 0;
+	for (int i = min_addr + 1; i < kArraySize; i++)
+		sum_after_min += arr[i];
+	return sum_after_min;
+}
+
+void SortArray(double arr[], const int kArraySize) {
+	for (int i = 0; i < kArraySize - 1; i++)
+		for (int j = 0; j < kArraySize - i - 1; j++)
+			if (abs(arr[j]) > abs(arr[j + 1]))
+				swap(arr[j], arr[j + 1]);
 }

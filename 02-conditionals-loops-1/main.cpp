@@ -39,17 +39,17 @@ int main() {
 			cout << "|" << setw(11) << xn << setw(7) << "|";
 
 			double f;
-			if (((xn + c) < kEps) && (abs(a) > kEps)) {
-				f = a * pow(xn, 3) + b;
+			if (((xn + c) < 0) && (abs(a) > kEps)) {
+				f = -a * pow(xn, 3) - b;
 			}
-			else if (((xn + c) > kEps) && (abs(a) < kEps)) {
-				if (abs(xn) < kEps) {
+			else if (((xn + c) > 0) && (abs(a) < kEps)) {
+				if (abs(xn - c) < kEps) {
 					cout << "  division by 0  |\n";
 					xn += dx;
 					continue;
 				}
 				else {
-					f = (xn - a) / xn;
+					f = (xn - a) / (xn - c);
 				}
 			}
 			else {

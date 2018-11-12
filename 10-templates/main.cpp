@@ -1,93 +1,117 @@
 #include <iostream>
-#include <cmath>
-#include <string>
 #include <fstream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
-template <size_t N, class Type>
-void ReadArray(Type a[N][N], string name) {
-	ifstream fin(name + ".txt");
-	if (!fin.is_open()) {
-		cout << "can't open file" << endl;
-	}
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			fin >> a[i][j];
-		}
-	}
-	fin.close();
-}
+template <class T>
+int ReadArray(T** arr, int size, string file_name);
 
-template <size_t N, class Type>
-void PrintArray(Type a[N][N]) {
-	cout << "Array: " << endl;
-	for (int i = 0; i < N; i++) {
-		cout << "|";
-		for (int j = 0; j < N; j++) {
-			cout << setw(3) << a[i][j] << setw(2) << "|";
-		}
-		cout << endl;
-	}
-	cout << endl << endl;
-}
+template <class T>
+void PrintArray(T** arr, int size);
 
-template <size_t N, class Type>
-void CyclePush(Type a[N][N], int k) {
-	Type b[N], c[N], d[N], e[N];
-	for (int i = 0; i < k; i++)
-	{
-		for (int i = 0; i < N; i++)
-		{
-			b[i] = a[0][i];
-			c[i] = a[N - i - 1][N - 1];
-			d[i] = a[N - 1][i];
-			e[i] = a[i][0];
-		}
-		for (int i = 0; i < N; i++)
-		{
-			a[0][N - i - 1] = e[i];
-			a[i][N - 1] = b[i];
-			a[N - 1][i] = c[i];
-			a[i][0] = d[i];
-		}
-	}
-}
+template <class T>
+void CyclePush(T** arr, int size, int shift);
 
-template <class TypeAr>
-void start(string name) {
-	int const kCol = 3,
-		kRow = 3;
-	TypeAr a[kRow][kCol];
-	ReadArray<kRow, TypeAr>(a, name);
-	PrintArray<kRow, TypeAr>(a);
-
-	cout << "Enter k(k>0): ";
-	int k;
-	cin >> k;
-	cout << endl << "Result:\n\n";
-	CyclePush<kRow, TypeAr>(a, k);
-	PrintArray<kRow, TypeAr>(a);
-}
+template <class T>
+int Execute(string file_name);
 
 int main() {
-error:
-	cout << "Select the data type (0-integer, 1-double, 2-float): ";
+
 	string select;
+selection:
+	cout << "Select the data type (0 - integer, 1 - double, 2 - float): ";
 	cin >> select;
 	if (select == "0") {
-		start<int>("int");
+		Execute<int>("integer.txt");
 	}
 	else if (select == "1") {
-		start<double>("double");
+		Execute<double>("double.txt");
 	}
 	else if (select == "2") {
-		start<float>("float");
+		Execute<float>("float.txt");
 	}
 	else {
-		cout << "Error input! (Only 0/1/2)" << endl;
-		goto error;
+		cout << "Error input! (Only 0, 1 or 2).\n\n";
+		goto selection;
 	}
+
 	return 0;
+}
+
+template <class T>
+int Execute(string file_name) {
+	int size = 3;
+
+	T** arr = new T*[size];
+	for (int i = 0; i < size; ++i)
+		arr[i] = new T[size];
+
+	if (ReadArray(arr, size, file_name))
+		return 1;
+	cout << "Starting array:\n";
+	PrintArray(arr, size);
+	cout << endl;
+
+	int k;
+	cout << "Enter k > 0: ";
+	cin >> k;
+
+	cout << "\nShifted array:\n";
+	CyclePush(arr, size, k);
+	PrintArray(arr, size);
+
+	for (int i = 0; i < size; i++) delete[] arr[i];
+	delete[] arr;
+
+	return 0;
+}
+
+template <class T>
+int ReadArray(T** arr, int size, string file_name) {
+	ifstream fin(file_name);
+	if (!fin.is_open()) {
+		cout << "Can't open file: " << file_name << endl;
+		return 1;
+	}
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			fin >> arr[i][j];
+
+	fin.close();
+	return 0;
+}
+
+template <class T>
+void PrintArray(T** arr, int size) {
+	for (int i = 0; i < size; i++) {
+		cout << "|";
+		for (int j = 0; j < size; j++)
+			cout << setw(3) << arr[i][j] << setw(2) << "|";
+		cout << endl;
+	}
+}
+
+template <class T>
+void CyclePush(T** arr, int size, int shift) {
+	T* a = new T[size];
+	T* b = new T[size];
+	T* c = new T[size];
+	T* d = new T[size];
+	for (int rotation = 0; rotation < shift; rotation++) {
+		for (int i = 0; i < size; i++) {
+			a[i] = arr[0][i];
+			b[i] = arr[size - i - 1][size - 1];
+			c[i] = arr[size - 1][i];
+			d[i] = arr[i][0];
+		}
+		for (int i = 0; i < size; i++) {
+			arr[0][size - i - 1] = d[i];
+			arr[i][size - 1] = a[i];
+			arr[size - 1][i] = b[i];
+			arr[i][0] = c[i];
+		}
+	}
 }

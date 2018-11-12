@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
 	const int kMaxIters = 1000;
-	const double kEps = 1e-15;
+
 	double xn, xk, dx, eps;
 	cout << "Enter xn -> ";
 	cin >> xn;
@@ -38,14 +38,13 @@ int main() {
 		cout << fixed;
 		cout.precision(6);
 
-		double f, iter;
-		while ((xk - xn) > kEps)
-		{
+		while (xn <= xk) {
 			int n = 1;
-			iter = f = 1;
-			while (abs(iter) > eps) {
-				iter = pow((-1), n)*pow(xn, n * 2) / tgamma(n * 2);
-				f += iter;
+			double nth_term = 1;
+			double f = nth_term;
+			while (abs(nth_term) > eps) {
+				nth_term = pow(-1, n) * pow(xn, n * 2) / tgamma(n * 2 + 1);
+				f += nth_term;
 				n++;
 				if (n > kMaxIters) break;
 			}

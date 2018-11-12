@@ -1,15 +1,11 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <iomanip>
 #include <string>
 
 using namespace std;
 
-void SortArray(int array[], int size);
-
-int Zeroes(int a[], int size);
-
-int SumAfterMax(int a[], int size, int max_modulo);
-
-void PrintArray(int array[], int size); 
+void PrintArray(double arr[], const int kArraySize);
+int CountZeroes(double arr[], const int kArraySize);
+int FindMin(double arr[], const int kArraySize);
+double SumAfterMin(double arr[], int min_addr, const int kArraySize);
+void SortArray(double arr[], const int kArraySize);

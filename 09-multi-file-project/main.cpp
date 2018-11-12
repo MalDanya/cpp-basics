@@ -2,37 +2,27 @@
 
 int main() {
 	int const kArraySize = 10;
-	int array[kArraySize],
-		max_modulo = 0;
+	double arr[kArraySize] = { 0, -1, 0, .3, -4, .5, 6, -7, 0, -.9 };
 
-	srand((unsigned)time(NULL));
+	cout << "Starting array:\n";
+	PrintArray(arr, kArraySize);
+	cout << endl;
 
-	//generation array
-	for (int i = 0; i < kArraySize; i++) {
-		array[i] = int(pow(-1, rand() % 2))*(rand() % 10); //[-9..9]
-		if (abs(array[i]) > max_modulo)
-			max_modulo = i;
-	}
-	cout << "Starting Array :" << endl;
-	PrintArray(array, kArraySize);
+	cout << "\nNumber of zero elements: ";
+	cout << CountZeroes(arr, kArraySize);
+	cout << endl;
 
-	cout << "Number of zero elements: ";
-	cout << Zeroes(array, kArraySize);
-	cout << endl << endl;
+	int min_addr = FindMin(arr, kArraySize);
+	cout << "\nSum of elements after min element = ";
+	if (min_addr < kArraySize - 1)
+		cout << SumAfterMin(arr, min_addr, kArraySize);
+	else
+		cout << "min element is the last one";
+	cout << endl;
 
-	cout << "Sum of elements after max modulo element = ";
-	if (max_modulo < kArraySize)
-	{
-		cout << SumAfterMax(array, kArraySize, max_modulo);
-		cout << endl << endl;
-	}
-	else {
-		cout << "Error: max modulo element is last";
-		cout << endl << endl;
-	}
-	cout << "Sorted Array :" << endl;
-	SortArray(array, kArraySize);
-	PrintArray(array, kArraySize);
+	cout << "\nSorted array:\n";
+	SortArray(arr, kArraySize);
+	PrintArray(arr, kArraySize);
 
 	return 0;
 }

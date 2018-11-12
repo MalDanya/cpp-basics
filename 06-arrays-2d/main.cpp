@@ -1,72 +1,82 @@
 #include <iostream>
-#include <cmath>
-#include <string>
 #include <fstream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
-template <size_t N, size_t M>
-void ReadArray(int a[N][M], string name) {
-	ifstream fin(name + ".txt");
-	if (!fin.is_open()) {
-		cout << "can't open file" << endl;
-	}
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			fin >> a[i][j];
-		}
-	}
-	fin.close();
-}
-
-template <size_t N, size_t M>
-void PrintArray(int a[N][M]) {
-	cout << "Array: " << endl;
-	for (int i = 0; i < N; i++) {
-		cout << "|";
-		for (int j = 0; j < M; j++) {
-			cout << setw(3) << a[i][j] << setw(2) << "|";
-		}
-		cout << endl;
-	}
-	cout << endl << endl;
-}
-
-template <size_t N>
-void CyclePush(int a[N][N], int k) {
-	int b[N], c[N], d[N], e[N];
-	for (int i = 0; i < k; i++)
-	{
-		for (int i = 0; i < N; i++)
-		{
-			b[i] = a[0][i];
-			c[i] = a[N - i - 1][N - 1];
-			d[i] = a[N - 1][i];
-			e[i] = a[i][0];
-		}
-		for (int i = 0; i < N; i++)
-		{
-			a[0][N - i - 1] = e[i];
-			a[i][N - 1] = b[i];
-			a[N - 1][i] = c[i];
-			a[i][0] = d[i];
-		}
-	}
-}
+int ReadArray(int** arr, int size, string file_name);
+void PrintArray(int** arr, int size);
+void CyclePush(int** arr, int size, int shift);
 
 int main() {
-	int const kCol = 3,
-		kRow = 3;
-	int a[kRow][kCol];
-	ReadArray<kRow, kCol>(a, "file");
-	PrintArray<kRow, kCol>(a);
+	int size = 3;
 
-	cout << "Enter k(k>0): ";
+	int** arr = new int*[size];
+	for (int i = 0; i < size; ++i)
+		arr[i] = new int[size];
+
+	if (ReadArray(arr, size, "file.txt"))
+		return 1;
+	cout << "Starting array:\n";
+	PrintArray(arr, size);
+	cout << endl;
+
 	int k;
+	cout << "Enter k > 0: ";
 	cin >> k;
-	cout << endl << "Result:\n\n";
-	CyclePush<kCol>(a, k);
-	PrintArray<kRow, kCol>(a);
+
+	cout << "\nShifted array:\n";
+	CyclePush(arr, size, k);
+	PrintArray(arr, size);
+
+	for (int i = 0; i < size; i++) delete[] arr[i];
+	delete[] arr;
+
 	return 0;
+}
+
+int ReadArray(int** arr, int size, string file_name) {
+	ifstream fin(file_name);
+	if (!fin.is_open()) {
+		cout << "Can't open file: " << file_name << endl;
+		return 1;
+	}
+
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			fin >> arr[i][j];
+
+	fin.close();
+	return 0;
+}
+
+void PrintArray(int** arr, int size) {
+	for (int i = 0; i < size; i++) {
+		cout << "|";
+		for (int j = 0; j < size; j++)
+			cout << setw(3) << arr[i][j] << setw(2) << "|";
+		cout << endl;
+	}
+}
+
+void CyclePush(int** arr, int size, int shift) {
+	int* a = new int[size];
+	int* b = new int[size];
+	int* c = new int[size];
+	int* d = new int[size];
+	for (int rotation = 0; rotation < shift; rotation++) {
+		for (int i = 0; i < size; i++) {
+			a[i] = arr[0][i];
+			b[i] = arr[size - i - 1][size - 1];
+			c[i] = arr[size - 1][i];
+			d[i] = arr[i][0];
+		}
+		for (int i = 0; i < size; i++) {
+			arr[0][size - i - 1] = d[i];
+			arr[i][size - 1] = a[i];
+			arr[size - 1][i] = b[i];
+			arr[i][0] = c[i];
+		}
+	}
 }

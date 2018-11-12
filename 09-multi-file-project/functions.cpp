@@ -1,53 +1,45 @@
 #include "functions.h"
 
-void PrintArray(int array[], int size) {
-	cout << string(61, '-') << endl;
-	cout << "|";
+void PrintArray(double arr[], const int kArraySize) {
+	cout << string(81, '-') << "\n|";
 
-	for (int i = 0; i < size; i++) {
-		cout << setw(2) << "[" << i << "]" << setw(2) << "|";
-	}
+	for (int i = 0; i < kArraySize; i++)
+		cout << setw(3) << "[" << i << "]" << setw(3) << "|";
 
-	cout << "<- Index";
-	cout << endl << string(61, '-') << endl << "|";
+	cout << " <- index\n" << string(81, '-') << "\n|";
 
-	for (int i = 0; i < size; i++) {
-		cout << setw(3) << array[i] << setw(3) << "|";
-	}
+	for (int i = 0; i < kArraySize; i++)
+		cout << setw(4) << arr[i] << setw(4) << "|";
 
-	cout << "<- array[i]";
-	cout << endl;
-	cout << string(61, '-') << endl;
-	cout << endl;
+	cout << " <- array\n" << string(81, '-');
 }
 
-void SortArray(int array[], int size) {
-	for (int i = 0; i < size - 1; i++) {
-		for (int j = 0; j < size - i - 1; j++) {
-			if (abs(array[j]) > abs(array[j + 1])) {
-				swap(array[j], array[j + 1]);
-			}
-		}
-	}
+int CountZeroes(double arr[], const int kArraySize) {
+	int num_zeroes = 0;
+	for (int i = 0; i < kArraySize; i++)
+		if (arr[i] == 0)
+			num_zeroes++;
+	return num_zeroes;
 }
 
-int Zeroes(int a[], int size) {
-	int result = 0;
-	for (int i = 0; i < size; i++)
-	{
-		if (a[i] == 0)
-		{
-			result++;
-		}
-	}
-	return result;
+int FindMin(double arr[], const int kArraySize) {
+	int min_addr = 0;
+	for (int i = 1; i < kArraySize; i++)
+		if (arr[i] < arr[min_addr])
+			min_addr = i;
+	return min_addr;
 }
 
-int SumAfterMax(int a[], int size, int max_modulo) {
-	int result = 0;
-	for (int i = max_modulo; i < size; i++)
-	{
-		result += a[i];
-	}
-	return result;
+double SumAfterMin(double arr[], int min_addr, const int kArraySize) {
+	double sum_after_min = 0;
+	for (int i = min_addr + 1; i < kArraySize; i++)
+		sum_after_min += arr[i];
+	return sum_after_min;
+}
+
+void SortArray(double arr[], const int kArraySize) {
+	for (int i = 0; i < kArraySize - 1; i++)
+		for (int j = 0; j < kArraySize - i - 1; j++)
+			if (abs(arr[j]) > abs(arr[j + 1]))
+				swap(arr[j], arr[j + 1]);
 }
