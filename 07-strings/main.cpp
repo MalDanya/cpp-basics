@@ -4,66 +4,70 @@
 
 using namespace std;
 
-string Replace(char s) {
-	string TranslatedNumber = " ";
+string DigitToWord(char s) {
+	string translated_digit = "";
 	switch (s) {
 	case '0':
-		TranslatedNumber = "zero";
+		translated_digit = "zero";
 		break;
 	case '1':
-		TranslatedNumber = "one";
+		translated_digit = "one";
 		break;
 	case '2':
-		TranslatedNumber = "two";
+		translated_digit = "two";
 		break;
 	case '3':
-		TranslatedNumber = "three";
+		translated_digit = "three";
 		break;
 	case '4':
-		TranslatedNumber = "four";
+		translated_digit = "four";
 		break;
 	case '5':
-		TranslatedNumber = "five";
+		translated_digit = "five";
 		break;
 	case '6':
-		TranslatedNumber = "six";
+		translated_digit = "six";
 		break;
 	case '7':
-		TranslatedNumber = "seven";
+		translated_digit = "seven";
 		break;
 	case '8':
-		TranslatedNumber = "eight";
+		translated_digit = "eight";
 		break;
 	case '9':
-		TranslatedNumber = "nine";
+		translated_digit = "nine";
 		break;
 	}
-	return TranslatedNumber;
+	return translated_digit;
 }
 
 int main() {
 	string file_name;
-
-	cout << "Write  file name (default name 'file.txt') -> ";
+	cout << "Write file name -> ";
 	cin >> file_name;
-	/*file_name += ".txt";*/
 	ifstream fin(file_name);
-
 	if (!fin.is_open()) {
-		cout << "can't open file!" << endl;
+		cout << "can't open file!\n";
 		return 1;
 	}
 
-	char s;
-	while (!fin.eof()) {
-		fin.get(s);
-		if ((s <= '9') && (s >= '0')) {
-			cout << Replace(s);
+	string word;
+	while (fin >> word) {
+		unsigned int word_len = word.length();
+		for (unsigned int i = 0; i < word_len; i++) {
+			if (isdigit(word[i]))
+				cout << DigitToWord(word[i]);
+			else
+				cout << word[i];
 		}
-		else
-			cout << s;
-	}
 
+		if (word[word_len - 1] == '.' ||
+			word[word_len - 1] == '!' ||
+			word[word_len - 1] == '?')
+			cout << endl;
+		else
+			cout << " ";
+	}
 	fin.close();
 	return 0;
 }

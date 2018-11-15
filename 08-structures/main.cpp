@@ -1,177 +1,123 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-
-#define kNotes 3
-#define kDate 3
+#include <regex>
 
 using namespace std;
 
 struct Note {
-	string name, surname;
+	string full_name;
 	string phone_number;
-	int date[kDate] = { 0,0,0 };
+	int date_of_birth[3];
 };
 
-void DateConvert(string s, int *a) {
-	string buf;
-	for (int i = 0; i < 3; i++)
-	{
-		buf = s[3 * i + 1];
-		a[i] = atoi(buf.c_str());
-		buf = s[3 * i];
-		a[i] += atoi(buf.c_str()) * 10;
-	}
-}
-
-bool IsDigit(char s) {
-	if (((s >= '0') && (s <= '9')))
-	{
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-bool IsDate(string s) {
-	bool result = true;
-	if (!(s.length() == 8))
-		result = false;
-
-	if (!((s[2] == '.') && (s[5] == '.')))
-		result = false;
-
-	for (int i = 0; i < 8; i += 3)
-	{
-		if (!IsDigit(s[i]))
-			if (!IsDigit(s[i + 1])) {
-				result = false;
-				cout << "False date";
-			}
-	}
-	return result;
-}
-
-bool IsPhoneNumber(string s) {
-	bool result = true;
-	if (s.length() > 4)
-		if (s[0] = '+') {
-			for (int i = 1; i < int(s.length()); i++)
-			{
-				if (!((s[i] >= '0') && (s[i] <= '9')))
-					result = false;
-			}
-		}
-		else
-		result = false;
-	return result;
-}
-
-void AddNotes(Note *a) {
-	for (int i = 0; i < kNotes; i++) {
-		cout << i + 1 << ". Input the name and surname (e.g., Ivan Ivanov): ";
-		cin >> a[i].name >> a[i].surname;
-		cin.ignore();
-
-	wrong_number:
-		cout << "Input phone number(e.g., +799999999999):";
-		string s;
-		cin >> s;
-		if (!IsPhoneNumber(s))
-		{
-			cout << "Invalid number!" << endl;
-			goto wrong_number;
-		}
-		a[i].phone_number = s;
-		cin.ignore();
-
-	wrong_input:
-		cout << "Input date of born(e.g., 01.01.99):";
-		cin >> s;
-		if (!IsDate(s))
-		{
-			cout << "Invalid date of born!" << endl;
-			goto wrong_input;
-		}
-		cout << endl;
-		DateConvert(s, a[i].date);
-	}
-	cout << endl;
-}
-
-void PrintNotes(Note *a) {
-	for (int i = 0; i < kNotes; i++) {
-		cout << i + 1 << ". " << a[i].name << endl;
-	}
-	cout << endl;
-}
-
-bool MinNumber(string s1, string s2) {
-	bool result = true;
-	s1.erase(0, 1);
-	s2.erase(0, 1);
-	int a = atoi(s1.c_str());
-	int b = atoi(s2.c_str());
-	if (b > a) {
-		result = false;
-	}
-	return result;
-}
-
-void SortNotes(Note *a) {
-	for (int i = 0; i < kNotes - 1; i++) {
-		for (int j = 0; j < kNotes - i - 1; j++) {
-			if ((MinNumber(a[i].phone_number, a[i + 1].phone_number))) {
-				swap(a[i], a[i + 1]);
-			}
-		}
-	}
-}
-
-void FindSurname(Note *a, string surn) {
-	bool find = false;
-	for (int i = 0; i < kNotes; i++)
-	{
-		if (surn == a[i].surname) {
-			find = true;
-			cout << a[i].name;
-			cout << " " << a[i].surname;
-			cout << " " << a[i].phone_number << " ";
-			for (int j = 0; j < kDate; j++)
-			{
-				if (j < 2) {
-					cout << a[i].date[j];
-					cout << ".";
-				}
-				else {
-					cout << a[i].date[j];
-				}
-
-			}
-
-		}
-	}
-	if (!find)
-	{
-		cout << "there is no person with that surname!";
-		cout << endl;
-	}
-}
+void AddNotes(Note *notes, const int kNumNotes);
+void ConvertDate(string date, int *convert);
+bool IsDate(string date);
+bool IsPhoneNumber(string phone_number);
+void PrintNotes(Note *notes, const int kNumNotes);
+void SortNotes(Note *notes, const int kNumNotes);
+void FindSurname(Note *notes, const int kNumNotes, string surname);
 
 int main() {
-	Note N[kNotes];
-	AddNotes(N);
+	const int kNumNotes = 8;
+	Note notes[kNumNotes];
+	AddNotes(notes, kNumNotes);
 
-	SortNotes(N);
-	PrintNotes(N);
-	cout << endl << endl;
+	SortNotes(notes, kNumNotes);
+	PrintNotes(notes, kNumNotes);
 
+	string surname;
 	cout << "Enter surname to find -> ";
-	string surn;
-	cin >> surn;
+	cin >> surname;
 	cout << endl;
-	FindSurname(N, surn);
+	FindSurname(notes, kNumNotes, surname);
 	cout << endl;
+
 	return 0;
+}
+
+void AddNotes(Note *notes, const int kNumNotes) {
+	for (int i = 0; i < kNumNotes; i++) {
+		cout << i + 1 << ". Enter full name (e.g., Ivan Ivanov): ";
+		getline(cin, notes[i].full_name);
+
+	wrong_number:
+		cout << "Enter phone number (e.g., +79999999999): ";
+		cin >> notes[i].phone_number;
+		if (!IsPhoneNumber(notes[i].phone_number)) {
+			cout << "Invalid phone number!\n";
+			goto wrong_number;
+		}
+
+	wrong_date:
+		string date_of_birth;
+		cout << "Enter date of birth (e.g., 01.01.1999): ";
+		cin >> date_of_birth;
+		if (!IsDate(date_of_birth)) {
+			cout << "Invalid date of birth!\n";
+			goto wrong_date;
+		}
+		ConvertDate(date_of_birth, notes[i].date_of_birth);
+		cout << endl;
+		cin.ignore();
+	}
+}
+
+bool IsPhoneNumber(string phone_number) {
+	if (regex_match(phone_number, regex("\\+7[0-9]{10}")))
+		return 1;
+	else
+		return 0;
+}
+
+bool IsDate(string date) {
+	string rgx = "(0[1-9]|[1-2][0-9]|3[0-1]).(0[1-9]|1[0-2]).[0-9]{4}";
+	if (regex_match(date, regex(rgx)))
+		return 1;
+	else
+		return 0;
+}
+
+void ConvertDate(string date, int *convert) {
+	convert[0] = stoi(date.substr(0, 2));
+	convert[1] = stoi(date.substr(3, 2));
+	convert[2] = stoi(date.substr(6, 4));
+}
+
+void PrintNotes(Note *notes, const int kNumNotes) {
+	for (int i = 0; i < kNumNotes; i++) {
+		cout << i + 1 << ". " << notes[i].full_name << endl;
+		cout << notes[i].phone_number << endl;
+		cout << notes[i].date_of_birth[0] << ".";
+		cout << notes[i].date_of_birth[1] << ".";
+		cout << notes[i].date_of_birth[2] << endl << endl;
+	}
+}
+
+void SortNotes(Note *notes, const int kNumNotes) {
+	for (int i = 0; i < kNumNotes - 1; i++)
+		for (int j = 0; j < kNumNotes - i - 1; j++) {
+			string phone1 = notes[j].phone_number.substr(0, 4);
+			string phone2 = notes[j + 1].phone_number.substr(0, 4);
+			if (phone1.compare(phone2) > 0)
+				swap(notes[j], notes[j + 1]);
+		}
+}
+
+void FindSurname(Note *notes, const int kNumNotes, string surname) {
+	bool is_found = false;
+	for (int i = 0; i < kNumNotes; i++) {
+		if (notes[i].full_name.find(surname) != string::npos) {
+			is_found = true;
+			cout << notes[i].full_name << ", ";
+			cout << notes[i].phone_number << ", ";
+			cout << notes[i].date_of_birth[0] << ".";
+			cout << notes[i].date_of_birth[1] << ".";
+			cout << notes[i].date_of_birth[2];
+		}
+	}
+
+	if (!is_found)
+		cout << "There is no person with such surname!";
 }
