@@ -5,48 +5,48 @@
 using namespace std;
 
 string Replace(char s) {
-	string result = " ";
+	string TranslatedNumber = " ";
 	switch (s) {
 	case '0':
-		result = "zero";
+		TranslatedNumber = "zero";
 		break;
 	case '1':
-		result = "one";
+		TranslatedNumber = "one";
 		break;
 	case '2':
-		result = "two";
+		TranslatedNumber = "two";
 		break;
 	case '3':
-		result = "three";
+		TranslatedNumber = "three";
 		break;
 	case '4':
-		result = "four";
+		TranslatedNumber = "four";
 		break;
 	case '5':
-		result = "five";
+		TranslatedNumber = "five";
 		break;
 	case '6':
-		result = "six";
+		TranslatedNumber = "six";
 		break;
 	case '7':
-		result = "seven";
+		TranslatedNumber = "seven";
 		break;
 	case '8':
-		result = "eight";
+		TranslatedNumber = "eight";
 		break;
 	case '9':
-		result = "nine";
+		TranslatedNumber = "nine";
 		break;
 	}
-	return result;
+	return TranslatedNumber;
 }
 
 int main() {
 	string file_name;
 
-	cout << "Write  file name (default name 'file') -> ";
+	cout << "Write  file name (default name 'file.txt') -> ";
 	cin >> file_name;
-	file_name += ".txt";
+	/*file_name += ".txt";*/
 	ifstream fin(file_name);
 
 	if (!fin.is_open()) {

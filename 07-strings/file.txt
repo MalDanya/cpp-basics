@@ -1,4 +1,4 @@
-1 apple
-3 pinapple
-0 zeroes
+1 apple.
+3 pinapple?
+0 zeroes!
 666

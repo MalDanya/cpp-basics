@@ -2,7 +2,7 @@
 #include <string>
 #include <iomanip>
 
-#define kNotes 1
+#define kNotes 3
 #define kDate 3
 
 using namespace std;
@@ -47,7 +47,7 @@ bool IsDate(string s) {
 		if (!IsDigit(s[i]))
 			if (!IsDigit(s[i + 1])) {
 				result = false;
-				cout << "Fasle set in her";
+				cout << "False date";
 			}
 	}
 	return result;
@@ -56,12 +56,15 @@ bool IsDate(string s) {
 bool IsPhoneNumber(string s) {
 	bool result = true;
 	if (s.length() > 4)
-		for (int i = 0; i < int(s.length()); i++)
-		{
-			if (!((s[i] >= '0') && (s[i] <= '9')))
-				if (s[i] != '+')
+		if (s[0] = '+') {
+			for (int i = 1; i < int(s.length()); i++)
+			{
+				if (!((s[i] >= '0') && (s[i] <= '9')))
 					result = false;
+			}
 		}
+		else
+		result = false;
 	return result;
 }
 
@@ -84,11 +87,11 @@ void AddNotes(Note *a) {
 		cin.ignore();
 
 	wrong_input:
-		cout << "Input date of bern(e.g., 01.01.99):";
+		cout << "Input date of born(e.g., 01.01.99):";
 		cin >> s;
 		if (!IsDate(s))
 		{
-			cout << "Invalid date of bern!" << endl;
+			cout << "Invalid date of born!" << endl;
 			goto wrong_input;
 		}
 		cout << endl;
@@ -164,7 +167,7 @@ int main() {
 	PrintNotes(N);
 	cout << endl << endl;
 
-	cout << "Enter surname for find -> ";
+	cout << "Enter surname to find -> ";
 	string surn;
 	cin >> surn;
 	cout << endl;
